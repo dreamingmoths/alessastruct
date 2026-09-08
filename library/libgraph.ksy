@@ -969,19 +969,19 @@ types:
     sce_gif_pack_rgbaq:
         seq:
          - id: r
-           type: u8
+           type: u4
          - id: g
-           type: u8
+           type: u4
          - id: b
-           type: u8
+           type: u4
          - id: a
-           type: u8
+           type: u4
     sce_gif_pack_ad:
         seq:
          - id: data
-           type: u4
+           type: u8
          - id: addr
-           type: u4
+           type: u8
     sce_gif_pack_st:
         seq:
          - id: s
@@ -991,7 +991,7 @@ types:
          - id: q
            type: f4
          - id: pad96
-           type: u8
+           type: u4
     sce_gif_pack_uv:
         seq:
          - id: u
@@ -1007,7 +1007,7 @@ types:
          - id: y
            type: s4
          - id: z
-           type: u8
+           type: u4
          - id: f
            type: b12
          - id: pad108
@@ -1023,7 +1023,7 @@ types:
          - id: y
            type: s4
          - id: z
-           type: u8
+           type: u4
          - id: pad96
            type: b15
          - id: adc
@@ -1033,15 +1033,15 @@ types:
     sce_gif_pack_fog:
         seq:
          - id: pad
-           type: u8
+           type: u4
            repeat: expr
            repeat-expr: 3
          - id: f
-           type: u8
+           type: u4
     sce_gif_pack_nop:
         seq:
          - id: pad
-           type: u4
+           type: u8
            repeat: expr
            repeat-expr: 2
     sce_gs_alpha:
@@ -1229,9 +1229,9 @@ types:
     sce_gs_label:
         seq:
          - id: id
-           type: u8
+           type: u4
          - id: idmsk
-           type: u8
+           type: u4
     sce_gs_miptbp1:
         seq:
          - id: tbp1
@@ -1359,9 +1359,9 @@ types:
     sce_gs_signal:
         seq:
          - id: id
-           type: u8
+           type: u4
          - id: idmsk
-           type: u8
+           type: u4
     sce_gs_st:
         seq:
          - id: s
@@ -1575,269 +1575,269 @@ types:
     sce_gs_disp_env:
         seq:
          - id: pmode
-           type: u8
+           type: t_gs_pmode
          - id: smode2
-           type: u8
+           type: t_gs_smode2
          - id: dispfb
-           type: u8
+           type: t_gs_dispfb2
          - id: display
-           type: u8
+           type: t_gs_display2
          - id: bgcolor
-           type: u8
+           type: t_gs_bgcolor
     sce_gs_draw_env1:
         seq:
          - id: frame1
-           type: u8
+           type: sce_gs_frame
          - id: frame1addr
-           type: u4
-         - id: zbuf1
            type: u8
+         - id: zbuf1
+           type: sce_gs_zbuf
          - id: zbuf1addr
            type: s8
          - id: xyoffset1
-           type: u8
+           type: sce_gs_xyoffset
          - id: xyoffset1addr
            type: s8
          - id: scissor1
-           type: u8
+           type: sce_gs_scissor
          - id: scissor1addr
            type: s8
          - id: prmodecont
-           type: u8
+           type: sce_gs_prmodecont
          - id: prmodecontaddr
            type: s8
          - id: colclamp
-           type: u8
+           type: sce_gs_colclamp
          - id: colclampaddr
            type: s8
          - id: dthe
-           type: u8
+           type: sce_gs_dthe
          - id: dtheaddr
            type: s8
          - id: test1
-           type: u8
+           type: sce_gs_test
          - id: test1addr
            type: s8
     sce_gs_draw_env2:
         seq:
          - id: frame2
-           type: u8
+           type: sce_gs_frame
          - id: frame2addr
-           type: u4
-         - id: zbuf2
            type: u8
+         - id: zbuf2
+           type: sce_gs_zbuf
          - id: zbuf2addr
            type: s8
          - id: xyoffset2
-           type: u8
+           type: sce_gs_xyoffset
          - id: xyoffset2addr
            type: s8
          - id: scissor2
-           type: u8
+           type: sce_gs_scissor
          - id: scissor2addr
            type: s8
          - id: prmodecont
-           type: u8
+           type: sce_gs_prmodecont
          - id: prmodecontaddr
            type: s8
          - id: colclamp
-           type: u8
+           type: sce_gs_colclamp
          - id: colclampaddr
            type: s8
          - id: dthe
-           type: u8
+           type: sce_gs_dthe
          - id: dtheaddr
            type: s8
          - id: test2
-           type: u8
+           type: sce_gs_test
          - id: test2addr
            type: s8
     sce_gs_clear:
         seq:
          - id: testa
-           type: u8
+           type: sce_gs_test
          - id: testaaddr
            type: s8
          - id: prim
-           type: u8
+           type: sce_gs_prim
          - id: primaddr
            type: s8
          - id: rgbaq
-           type: u8
+           type: sce_gs_rgbaq
          - id: rgbaqaddr
            type: s8
          - id: xyz2a
-           type: u8
+           type: sce_gs_xyz
          - id: xyz2aaddr
            type: s8
          - id: xyz2b
-           type: u8
+           type: sce_gs_xyz
          - id: xyz2baddr
            type: s8
          - id: testb
-           type: u8
+           type: sce_gs_test
          - id: testbaddr
            type: s8
     sce_gs_d_buff:
         seq:
          - id: disp
-           type: u8
+           type: sce_gs_disp_env
            repeat: expr
            repeat-expr: 2
          - id: giftag0
-           type: u8
+           type: sce_gif_tag
          - id: draw0
-           type: u8
+           type: sce_gs_draw_env1
          - id: clear0
-           type: u8
+           type: sce_gs_clear
          - id: giftag1
-           type: u8
+           type: sce_gif_tag
          - id: draw1
-           type: u8
+           type: sce_gs_draw_env1
          - id: clear1
-           type: u8
+           type: sce_gs_clear
     sce_gs_d_buff_dc:
         seq:
          - id: disp
-           type: u8
+           type: sce_gs_disp_env
            repeat: expr
            repeat-expr: 2
          - id: giftag0
-           type: u8
+           type: sce_gif_tag
          - id: draw01
-           type: u8
+           type: sce_gs_draw_env1
          - id: draw02
-           type: u8
+           type: sce_gs_draw_env2
          - id: clear0
-           type: u8
+           type: sce_gs_clear
          - id: giftag1
-           type: u8
+           type: sce_gif_tag
          - id: draw11
-           type: u8
+           type: sce_gs_draw_env1
          - id: draw12
-           type: u8
+           type: sce_gs_draw_env2
          - id: clear1
-           type: u8
+           type: sce_gs_clear
     sce_gs_tex_env:
         seq:
          - id: texflush
-           type: u8
+           type: sce_gs_texflush
          - id: texflushaddr
            type: s8
          - id: tex11
-           type: u8
+           type: sce_gs_tex1
          - id: tex11addr
            type: s8
          - id: tex01
-           type: u8
+           type: sce_gs_tex0
          - id: tex01addr
            type: s8
          - id: clamp1
-           type: u8
+           type: sce_gs_clamp
          - id: clamp1addr
            type: s8
     sce_gs_tex_env2:
         seq:
          - id: texflush
-           type: u8
+           type: sce_gs_texflush
          - id: texflushaddr
            type: s8
          - id: tex12
-           type: u8
+           type: sce_gs_tex1
          - id: tex12addr
            type: s8
          - id: tex02
-           type: u8
+           type: sce_gs_tex0
          - id: tex02addr
            type: s8
          - id: clamp2
-           type: u8
+           type: sce_gs_clamp
          - id: clamp2addr
            type: s8
     sce_gs_alpha_env:
         seq:
          - id: alpha1
-           type: u8
+           type: sce_gs_alpha
          - id: alpha1addr
            type: s8
          - id: pabe
-           type: u8
+           type: sce_gs_pabe
          - id: pabeaddr
            type: s8
          - id: texa
-           type: u8
+           type: sce_gs_texa
          - id: texaaddr
            type: s8
          - id: fba1
-           type: u8
+           type: sce_gs_fba
          - id: fba1addr
            type: s8
     sce_gs_alpha_env2:
         seq:
          - id: alpha2
-           type: u8
+           type: sce_gs_alpha
          - id: alpha2addr
            type: s8
          - id: pabe
-           type: u8
+           type: sce_gs_pabe
          - id: pabeaddr
            type: s8
          - id: texa
-           type: u8
+           type: sce_gs_texa
          - id: texaaddr
            type: s8
          - id: fba2
-           type: u8
+           type: sce_gs_fba
          - id: fba2addr
            type: s8
     sce_gs_load_image:
         seq:
          - id: giftag0
-           type: u8
+           type: sce_gif_tag
          - id: bitbltbuf
-           type: u8
+           type: sce_gs_bitbltbuf
          - id: bitbltbufaddr
            type: s8
          - id: trxpos
-           type: u8
+           type: sce_gs_trxpos
          - id: trxposaddr
            type: s8
          - id: trxreg
-           type: u8
+           type: sce_gs_trxreg
          - id: trxregaddr
            type: s8
          - id: trxdir
-           type: u8
+           type: sce_gs_trxdir
          - id: trxdiraddr
            type: s8
          - id: giftag1
-           type: u8
+           type: sce_gif_tag
     sce_gs_store_image:
         seq:
          - id: vifcode
-           type: u8
+           type: u4
            repeat: expr
            repeat-expr: 4
          - id: giftag
-           type: u8
+           type: sce_gif_tag
          - id: bitbltbuf
-           type: u8
+           type: sce_gs_bitbltbuf
          - id: bitbltbufaddr
            type: s8
          - id: trxpos
-           type: u8
+           type: sce_gs_trxpos
          - id: trxposaddr
            type: s8
          - id: trxreg
-           type: u8
+           type: sce_gs_trxreg
          - id: trxregaddr
            type: s8
          - id: finish
-           type: u8
+           type: sce_gs_finish
          - id: finishaddr
            type: s8
          - id: trxdir
-           type: u8
+           type: sce_gs_trxdir
          - id: trxdiraddr
            type: s8
     sce_gs_g_param:
