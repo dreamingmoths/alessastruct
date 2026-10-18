@@ -14,8 +14,10 @@ typedef struct FieldDescription {
   const char* fieldName;
   const char* typeName;
   uint64_t repeatCount;
+  uint64_t fieldSizeBytes;
   int64_t alignOffset;
-  bool isStruct;
+  bool isRecordStruct;
+  bool isFieldUnion;
 } FieldDescription;
 
 class RecordIdCreator {
@@ -44,7 +46,7 @@ public:
                               bool isStruct);
   void getFieldTypeName(clang::FieldDecl* fieldDecl, clang::QualType valueType,
                         const char* fullTypeName, char* out);
-  void alignToSize(uint64_t size);
+  void alignToSize(uint64_t sizeBytes, uint64_t offset);
 
 private:
   clang::ASTContext* Context;

@@ -95,15 +95,21 @@ void KaitaiVisitor::onVisitStructOrUnion(RecordDecl* declaration,
     onVisitField(fieldDecl, layout, name, isStruct);
   }
 
-  if (isStruct)
-    alignToSize(layout.getSize().getQuantity());
+  if (isStruct) {
+    alignToSize(layout.getSize().getQuantity(), totalOffsetBits);
+  } else if (isUnion) {
+    kaitaiSerializer->endRecord();
+    kaitaiSerializer->beginRecord("seq");
+    alignToSize(layout.getSize().getQuantity(), 0);
+  }
 
   kaitaiSerializer->endRecord();
   kaitaiSerializer->endRecord();
 }
 
-void KaitaiVisitor::alignToSize(uint64_t sizeBytes) {
-  uint64_t padding = sizeBytes * 8 - totalOffsetBits;
+void KaitaiVisitor::alignToSize(uint64_t sizeBytes, uint64_t offset) {
+  uint64_t padding = sizeBytes * 8 - offset;
+
 
   if (padding > 0)
     kaitaiSerializer->writePadding(padding);
@@ -125,6 +131,7 @@ void KaitaiVisitor::onVisitField(FieldDecl* fieldDecl,
   bool isArray = qualType->isArrayType();
 
   TypeInfo typeInfo = contextRef.getTypeInfo(qualType);
+  uint64_t fieldSizeBytes = typeInfo.Width / 8;
 
   int64_t alignOffset =
       getFieldAlignOffset(fieldDecl, typeInfo, fieldOffset, isStruct);
@@ -147,9 +154,11 @@ void KaitaiVisitor::onVisitField(FieldDecl* fieldDecl,
   serializeField({
       .fieldName = fieldName,
       .typeName = typeName,
+      .fieldSizeBytes = fieldSizeBytes,
       .repeatCount = repeatCount,
       .alignOffset = alignOffset,
-      .isStruct = isStruct,
+      .isRecordStruct = isStruct,
+      .isFieldUnion = qualType->isUnionType()
   });
 }
 
@@ -270,7 +279,7 @@ void serializeField(FieldDescription&& description) {
   if (description.alignOffset > 0)
     kaitaiSerializer->writePadding(description.alignOffset);
 
-  if (description.isStruct) {
+  if (description.isRecordStruct) {
     kaitaiSerializer->beginAttributes();
 
     if (*description.fieldName) {
@@ -278,6 +287,9 @@ void serializeField(FieldDescription&& description) {
     }
 
     kaitaiSerializer->writeAttributeProperty("type", description.typeName);
+
+    if (description.isFieldUnion)
+      kaitaiSerializer->writeAttributeProperty("size", description.fieldSizeBytes);
 
     if (description.repeatCount == 0) {
       kaitaiSerializer->writeAttributeProperty("repeat", "eos");
@@ -290,6 +302,7 @@ void serializeField(FieldDescription&& description) {
     kaitaiSerializer->endAttributes();
   } else /* if (declaration->isUnion()) */ {
     kaitaiSerializer->beginRecord(description.fieldName);
+    kaitaiSerializer->writeKeyValue("pos", "0");
     kaitaiSerializer->writeKeyValue("type", description.typeName);
 
     if (description.repeatCount == 0) {
