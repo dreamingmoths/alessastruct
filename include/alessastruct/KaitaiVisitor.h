@@ -44,6 +44,7 @@ public:
                               bool isStruct);
   void getFieldTypeName(clang::FieldDecl* fieldDecl, clang::QualType valueType,
                         const char* fullTypeName, char* out);
+  void alignToSize(uint64_t size);
 
 private:
   clang::ASTContext* Context;

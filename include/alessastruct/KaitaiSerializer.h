@@ -44,6 +44,8 @@ public:
 
   void writeAfterword(void);
 
+  void writePadding(uint64_t offset);
+
   void canonicalizeName(const char* name, char* result, uint16_t length);
 
   std::string asKaitaiType(const clang::Type* type, size_t size,

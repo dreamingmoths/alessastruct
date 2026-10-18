@@ -136,6 +136,25 @@ void KaitaiSerializer::writeAfterword(void) {
   }
 }
 
+void KaitaiSerializer::writePadding(uint64_t offset) {
+  uint64_t bytes = offset / 8;
+  uint64_t bits = offset & 0b111;
+
+  if (bits) {
+    kaitaiSerializer->beginAttributes();
+    kaitaiSerializer->writeAttributeProperty(
+      "type",
+      (std::string("b") + std::to_string(offset)).c_str());
+    kaitaiSerializer->endAttributes();
+  }
+  
+  if (bytes) {
+    kaitaiSerializer->beginAttributes();
+    kaitaiSerializer->writeAttributeProperty("size", offset >> 3);
+    kaitaiSerializer->endAttributes();
+  }
+}
+
 void KaitaiSerializer::canonicalizeName(const char* name, char* result,
                                         uint16_t length) {
   int i = 0, j = 0;

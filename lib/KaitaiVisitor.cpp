@@ -95,9 +95,20 @@ void KaitaiVisitor::onVisitStructOrUnion(RecordDecl* declaration,
     onVisitField(fieldDecl, layout, name, isStruct);
   }
 
+  if (isStruct)
+    alignToSize(layout.getSize().getQuantity());
+
   kaitaiSerializer->endRecord();
   kaitaiSerializer->endRecord();
 }
+
+void KaitaiVisitor::alignToSize(uint64_t sizeBytes) {
+  uint64_t padding = sizeBytes * 8 - totalOffsetBits;
+
+  if (padding > 0)
+    kaitaiSerializer->writePadding(padding);
+}
+
 
 void KaitaiVisitor::onVisitField(FieldDecl* fieldDecl,
                                  const ASTRecordLayout& layout,
@@ -256,17 +267,8 @@ ArrayDescription getArrayDescription(ASTContext& context, QualType arrayType) {
 }
 
 void serializeField(FieldDescription&& description) {
-  if (description.alignOffset > 0) {
-    kaitaiSerializer->beginAttributes();
-    if (description.alignOffset & 0b111)
-      kaitaiSerializer->writeAttributeProperty(
-          "type",
-          (std::string("b") + std::to_string(description.alignOffset)).c_str());
-    else
-      kaitaiSerializer->writeAttributeProperty("size",
-                                               description.alignOffset >> 3);
-    kaitaiSerializer->endAttributes();
-  }
+  if (description.alignOffset > 0)
+    kaitaiSerializer->writePadding(description.alignOffset);
 
   if (description.isStruct) {
     kaitaiSerializer->beginAttributes();
