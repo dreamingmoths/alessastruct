@@ -5,6 +5,8 @@ on:
   push:
     tags:
       - '*'
+    branches:
+      - ci/release
 
 jobs:
   build:
