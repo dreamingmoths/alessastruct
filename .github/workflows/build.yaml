@@ -76,7 +76,7 @@ jobs:
 
     - name: release artifact
       uses: softprops/action-gh-release@v3.0.4
-      if: github.ref_type == "tag"
+      if: github.ref_type == 'tag'
       with:
         files: llvm/build/bin/${{ matrix.TARGET.ARTIFACT_NAME }}
         draft: true
