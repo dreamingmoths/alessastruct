@@ -1,7 +1,12 @@
 name: build
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+    branches:
+      - ci/release
 
 jobs:
   build:
@@ -43,7 +48,14 @@ jobs:
       run: ninja alessastruct
 
     - name: upload artifact
-      uses: actions/upload-artifact@main
+      uses: actions/upload-artifact@v7.0.2
       with:
-        name: alessastruct-bin
+        name: alessastruct
         path: llvm/build/bin/alessastruct
+
+    - name: release artifact
+      uses: softprops/action-gh-release@v3.0.4
+      with:
+        files: llvm/build/bin/alessastruct
+        draft: true
+
