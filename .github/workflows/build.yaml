@@ -1,20 +1,38 @@
 name: build
 
+permissions:
+  contents: write
+
 on:
   workflow_dispatch:
   push:
     tags:
       - '*'
-    branches:
-      - ci/release
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.TARGET.OS }}
+    strategy:
+      fail-fast: false
+      matrix:
+        TARGET:
+          - {
+              OS: 'ubuntu-latest',
+              ARTIFACT_NAME: 'alessastruct-linux-x86_64'
+            }
+          - {
+              OS: 'macos-latest',
+              ARTIFACT_NAME: 'alessastruct-macos-arm64'
+            }
 
     steps:
-    - name: dependencies
+    - name: install dependencies (ubuntu)
+      if: matrix.TARGET.OS == 'ubuntu-latest'
       run: sudo apt install -y ninja-build
+
+    - name: install dependencies (macOS)
+      if: matrix.TARGET.OS == 'macos-latest'
+      run: brew install ninja
 
     - name: clone llvm
       uses: actions/checkout@main
@@ -50,12 +68,16 @@ jobs:
     - name: upload artifact
       uses: actions/upload-artifact@v7.0.2
       with:
-        name: alessastruct
+        name: ${{ matrix.TARGET.ARTIFACT_NAME }}
         path: llvm/build/bin/alessastruct
+
+    - name: rename artifact
+      run: mv llvm/build/bin/alessastruct llvm/build/bin/${{ matrix.TARGET.ARTIFACT_NAME }}
 
     - name: release artifact
       uses: softprops/action-gh-release@v3.0.4
+      if: github.ref_type == 'tag'
       with:
-        files: llvm/build/bin/alessastruct
+        files: llvm/build/bin/${{ matrix.TARGET.ARTIFACT_NAME }}
         draft: true
 
