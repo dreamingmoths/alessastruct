@@ -154,8 +154,8 @@ void KaitaiVisitor::onVisitField(FieldDecl* fieldDecl,
   serializeField({
       .fieldName = fieldName,
       .typeName = typeName,
-      .fieldSizeBytes = fieldSizeBytes,
       .repeatCount = repeatCount,
+      .fieldSizeBytes = fieldSizeBytes,
       .alignOffset = alignOffset,
       .isRecordStruct = isStruct,
       .isFieldUnion = qualType->isUnionType()

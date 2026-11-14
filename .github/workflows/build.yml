@@ -1,0 +1,49 @@
+name: build
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: dependencies
+      run: sudo apt install -y ninja-build
+
+    - name: clone llvm
+      uses: actions/checkout@main
+      with:
+        repository: llvm/llvm-project
+        path: llvm
+
+    - name: clone alessastruct
+      uses: actions/checkout@main
+      with:
+        repository: dreamingmoths/alessastruct
+        path: llvm/clang-tools-extra/alessastruct
+
+    - name: add alessastruct to cmakelists.txt
+      working-directory: llvm/clang-tools-extra
+      run: echo "add_subdirectory(alessastruct)" >> CMakeLists.txt
+
+    - name: run ccache action
+      uses: hendrikmuhs/ccache-action@v1.2.25
+      
+    - name: run cmake
+      working-directory: llvm
+      run: |
+       mkdir build && cd build; \
+       cmake -G Ninja ../llvm -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" \
+       -DLLVM_TARGETS_TO_BUILD=X86 -DCMAKE_BUILD_TYPE=Release \
+       -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+       
+    - name: build alessastruct
+      working-directory: llvm/build
+      run: ninja alessastruct
+
+    - name: upload artifact
+      uses: actions/upload-artifact@main
+      with:
+        name: alessastruct-bin
+        path: llvm/build/bin/alessastruct
